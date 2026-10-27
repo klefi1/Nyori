@@ -1,0 +1,12 @@
+# секреты и данные — не в репозиторий
+.env
+nyori.db
+nyori.db-wal
+nyori.db-shm
+bot.log*
+modbot_data.json
+
+__pycache__/
+*.pyc
+.venv/
+*.tmp

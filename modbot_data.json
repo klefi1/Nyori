@@ -1,0 +1,223 @@
+{
+  "groups": {
+    "-1003915016216": {
+      "title": "а",
+      "settings": {
+        "silent_mode": true,
+        "delete_commands": true,
+        "delete_service": true,
+        "log_actions": true,
+        "log_service_events": true,
+        "allow_admins": true,
+        "warn_limit": 3,
+        "warn_action": "mute",
+        "warn_mute_hours": 12,
+        "purge_limit": 30
+      },
+      "warns": {},
+      "recent_messages": [
+        {
+          "ts": 1780117763.522931,
+          "user_id": 8546421029,
+          "message_id": 2
+        },
+        {
+          "ts": 1780117795.780822,
+          "user_id": 8546421029,
+          "message_id": 3
+        },
+        {
+          "ts": 1780117803.7328289,
+          "user_id": 8546421029,
+          "message_id": 4
+        },
+        {
+          "ts": 1780118064.7944477,
+          "user_id": 8546421029,
+          "message_id": 5
+        },
+        {
+          "ts": 1780118682.894212,
+          "user_id": 8546421029,
+          "message_id": 6
+        },
+        {
+          "ts": 1780118687.0703924,
+          "user_id": 8546421029,
+          "message_id": 7
+        }
+      ],
+      "recent_actions": [
+        {
+          "ts": 1780118687.2898335,
+          "short": "Чат открыт · Klefi122"
+        },
+        {
+          "ts": 1780118683.1137793,
+          "short": "Чат закрыт · Klefi122"
+        },
+        {
+          "ts": 1780117803.979177,
+          "short": "Чат открыт · Klefi122"
+        },
+        {
+          "ts": 1780117796.0025718,
+          "short": "Чат закрыт · Klefi122"
+        }
+      ],
+      "user_cache": {
+        "8546421029": {
+          "name": "Klefi122",
+          "username": "Klefi122"
+        }
+      }
+    },
+    "-1003532689886": {
+      "title": "Чат",
+      "settings": {
+        "silent_mode": true,
+        "delete_commands": true,
+        "delete_service": true,
+        "log_actions": true,
+        "log_service_events": false,
+        "allow_admins": true,
+        "warn_limit": 3,
+        "warn_action": "mute",
+        "warn_mute_hours": 12,
+        "purge_limit": 30
+      },
+      "warns": {},
+      "recent_messages": [
+        {
+          "ts": 1780117815.990709,
+          "user_id": 1981201875,
+          "message_id": 2323
+        },
+        {
+          "ts": 1780118606.3879857,
+          "user_id": 1981201875,
+          "message_id": 2328
+        },
+        {
+          "ts": 1780118685.7953444,
+          "user_id": 1981201875,
+          "message_id": 2331
+        },
+        {
+          "ts": 1780118705.3755853,
+          "user_id": 1981201875,
+          "message_id": 2333
+        },
+        {
+          "ts": 1780118713.093934,
+          "user_id": 1981201875,
+          "message_id": 2334
+        },
+        {
+          "ts": 1780118735.0725396,
+          "user_id": 1981201875,
+          "message_id": 2336
+        },
+        {
+          "ts": 1780118753.6660578,
+          "user_id": 1981201875,
+          "message_id": 2337
+        },
+        {
+          "ts": 1780118764.0995233,
+          "user_id": 1981201875,
+          "message_id": 2338
+        },
+        {
+          "ts": 1780118823.349761,
+          "user_id": 1981201875,
+          "message_id": 2340
+        },
+        {
+          "ts": 1780118837.5046463,
+          "user_id": 1981201875,
+          "message_id": 2342
+        },
+        {
+          "ts": 1780118875.7453911,
+          "user_id": 1981201875,
+          "message_id": 2344
+        },
+        {
+          "ts": 1780118879.3957112,
+          "user_id": 1981201875,
+          "message_id": 2345
+        }
+      ],
+      "recent_actions": [
+        {
+          "ts": 1780118626.0459986,
+          "short": "PING"
+        },
+        {
+          "ts": 1780117981.837157,
+          "short": "Вошли в чат: Nyori_Bot"
+        },
+        {
+          "ts": 1780117966.176253,
+          "short": "Вышел из чата: Nyori_Bot"
+        }
+      ],
+      "user_cache": {
+        "1981201875": {
+          "name": "mapk_a3 (хз кто)",
+          "username": "TTmapk_a3"
+        },
+        "8534813210": {
+          "name": "Nyori",
+          "username": "Nyori_Bot"
+        },
+        "1087968824": {
+          "name": "Group",
+          "username": "GroupAnonymousBot"
+        }
+      }
+    },
+    "-1003222679977": {
+      "title": "Чат SFW",
+      "settings": {
+        "silent_mode": true,
+        "delete_commands": true,
+        "delete_service": true,
+        "log_actions": true,
+        "log_service_events": true,
+        "allow_admins": true,
+        "warn_limit": 3,
+        "warn_action": "mute",
+        "warn_mute_hours": 12,
+        "purge_limit": 30
+      },
+      "warns": {},
+      "recent_messages": [],
+      "recent_actions": [
+        {
+          "ts": 1780166388.9425592,
+          "short": "PING"
+        },
+        {
+          "ts": 1780166367.9124496,
+          "short": "Вошли в чат: Nyori_Bot"
+        }
+      ],
+      "user_cache": {
+        "8534813210": {
+          "name": "Nyori",
+          "username": "Nyori_Bot"
+        },
+        "1087968824": {
+          "name": "Group",
+          "username": "GroupAnonymousBot"
+        }
+      }
+    }
+  },
+  "subscribers": [
+    "1981201875",
+    "8546421029"
+  ]
+}

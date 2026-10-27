@@ -1,0 +1,24 @@
+{
+  "input_size": [
+    3,
+    384,
+    384
+  ],
+  "mean": [
+    0.5,
+    0.5,
+    0.5
+  ],
+  "std": [
+    0.5,
+    0.5,
+    0.5
+  ],
+  "interpolation": "bicubic",
+  "crop_pct": 1.0,
+  "labels": [
+    "NSFW",
+    "SFW"
+  ],
+  "max_abs_diff_vs_torch": 7.152557373046875e-07
+}
