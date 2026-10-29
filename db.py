@@ -73,7 +73,8 @@ def _init_schema(conn):
     CREATE TABLE IF NOT EXISTS groups (
         chat_id INTEGER PRIMARY KEY,
         title TEXT,
-        settings_json TEXT NOT NULL DEFAULT '{}'
+        settings_json TEXT NOT NULL DEFAULT '{}',
+        active INTEGER NOT NULL DEFAULT 1
     );
 
     CREATE TABLE IF NOT EXISTS members (
@@ -155,6 +156,11 @@ def _init_schema(conn):
 
     # Лёгкая миграция для баз, созданных до появления новых колонок —
     # CREATE TABLE IF NOT EXISTS не добавляет колонки в уже существующую таблицу.
+    group_cols = {row["name"] for row in conn.execute("PRAGMA table_info(groups)")}
+    if "active" not in group_cols:
+        # active = 0 -> бота из этой группы убрали (или группу удалили); настройки сохраняем на случай возвращения
+        conn.execute("ALTER TABLE groups ADD COLUMN active INTEGER NOT NULL DEFAULT 1")
+
     existing_cols = {row["name"] for row in conn.execute("PRAGMA table_info(members)")}
     if "captcha_message_id" not in existing_cols:
         conn.execute("ALTER TABLE members ADD COLUMN captcha_message_id INTEGER")
@@ -284,6 +290,14 @@ def ensure_group(chat_id, title=None):
         )
         if title:
             conn.execute("UPDATE groups SET title = ? WHERE chat_id = ?", (title, chat_id))
+        # раз бот видит там события — он в группе (возвращение после удаления «оживляет» группу с прежними настройками)
+        conn.execute("UPDATE groups SET active = 1 WHERE chat_id = ? AND active = 0", (chat_id,))
+
+
+def set_group_active(chat_id, active):
+    conn = get_conn()
+    with _lock, conn:
+        conn.execute("UPDATE groups SET active = ? WHERE chat_id = ?", (1 if active else 0, chat_id))
 
 
 def get_group_title(chat_id):
@@ -320,9 +334,10 @@ def toggle_setting(chat_id, field):
     return update_settings(chat_id, **{field: not settings[field]})
 
 
-def list_known_chat_ids():
+def list_known_chat_ids(active_only=True):
     conn = get_conn()
-    return [row["chat_id"] for row in conn.execute("SELECT chat_id FROM groups")]
+    q = "SELECT chat_id FROM groups" + (" WHERE active = 1" if active_only else "")
+    return [row["chat_id"] for row in conn.execute(q)]
 
 
 # ===================== ПОЛЬЗОВАТЕЛИ (кэш имён) =====================

@@ -76,6 +76,48 @@ _detector = None
 _load_failed = False
 
 
+def _build_detector():
+    """
+    NudeNet по умолчанию создаёт сессию onnxruntime с потоком на КАЖДОЕ видимое ядро и «запасной» памятью.
+    На хостинге с квотой 0.25 vCPU контейнер часто видит десятки ядер: бот раздувался за лимит памяти и тратил
+    секунды на картинку (потоки мешают друг другу). Собираем детектор сами: один поток, без арены.
+    Если внутреннее устройство NudeNet изменится — молча откатываемся на стандартный детектор.
+    """
+    import nudenet
+
+    try:
+        import cv2
+        cv2.setNumThreads(1)
+    except Exception:
+        pass
+    try:
+        import onnxruntime as ort
+        opts = ort.SessionOptions()
+        opts.intra_op_num_threads = 1
+        opts.inter_op_num_threads = 1
+        opts.enable_cpu_mem_arena = False
+        opts.enable_mem_pattern = False
+        det = nudenet.NudeDetector.__new__(nudenet.NudeDetector)
+        det.onnx_session = ort.InferenceSession(
+            os.path.join(os.path.dirname(nudenet.__file__), "320n.onnx"),
+            sess_options=opts, providers=["CPUExecutionProvider"])
+        det.input_width = det.input_height = 320
+        det.input_name = det.onnx_session.get_inputs()[0].name
+        return det
+    except Exception as e:
+        logger.warning("NudeNet: не удалось настроить лёгкий режим (%s) — использую стандартный", e)
+        return nudenet.NudeDetector()
+
+
+def release_memory():
+    """Вернуть системе освобождённую память (glibc держит её «про запас»). Вызывается после проверки картинок."""
+    try:
+        import ctypes
+        ctypes.CDLL("libc.so.6").malloc_trim(0)
+    except Exception:
+        pass   # не Linux / нет glibc — не страшно
+
+
 def _get_detector():
     global _detector, _load_failed
     if _detector is not None:
@@ -83,8 +125,7 @@ def _get_detector():
     if _load_failed:
         return None
     try:
-        from nudenet import NudeDetector
-        _detector = NudeDetector()
+        _detector = _build_detector()
         logger.info("Фильтр порно: модель NudeNet загружена")
     except Exception as e:
         _load_failed = True
@@ -163,6 +204,8 @@ def scan_image_bytes(raw, classify=True):
         p = nsfw_cls.classify(arr)
         if p is not None:
             acc[nsfw_cls.KEY] = p
+    del arr
+    release_memory()
     return acc
 
 

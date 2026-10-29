@@ -18,6 +18,11 @@ import sys
 import time
 import types
 
+# Ограничиваем число потоков математических библиотек ДО их импорта: на хостинге контейнер видит много ядер, а квота
+# процессора крошечная — лишние потоки только жрут память и тормозят.
+for _var in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
+    os.environ.setdefault(_var, "1")
+
 import telebot
 
 # Страховка от неправильной загрузки на хостинг: если папки nyori/ нет, а её файлы

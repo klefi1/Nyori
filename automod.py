@@ -479,6 +479,29 @@ def register(bot):
         except Exception as e:
             logger.error("Ошибка обработки смены статуса участника: %s", e)
 
+    @bot.my_chat_member_handler()
+    def on_my_chat_member(update):
+        """
+        Статус самого бота в чате изменился: добавили, повысили до админа, убрали, он сам вышел.
+        Благодаря этому новый чат появляется в панели сразу (не дожидаясь первого сообщения),
+        а убранный пропадает из списка.
+        """
+        try:
+            chat = update.chat
+            if chat.type not in ("group", "supergroup"):
+                return
+            status = update.new_chat_member.status
+            utils.forget_bot_in_chat_cache(chat.id)
+            if status in ("left", "kicked"):
+                db.ensure_group(chat.id, chat.title)
+                db.set_group_active(chat.id, False)
+                logger.info("Бота убрали из чата %s (%s): статус %s", chat.id, chat.title, status)
+            else:
+                db.ensure_group(chat.id, chat.title)
+                logger.info("Бот в чате %s (%s): статус %s", chat.id, chat.title, status)
+        except Exception as e:
+            logger.error("Ошибка обработки статуса бота в чате: %s", e)
+
     @bot.message_handler(content_types=["left_chat_member"])
     def on_leave(message):
         try:

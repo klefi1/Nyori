@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(_THIS_DIR) if os.path.basename(_THIS_DIR) == "nyori" 
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # Метка сборки: пишется в лог при старте, чтобы сразу видеть, что на хостинге лежат свежие файлы, а не вперемешку со старыми.
-BUILD_ID = "2026-10-26-a"
+BUILD_ID = "2026-10-27-b"
 
 _TOKEN_NAMES = ("TOKEN", "BOT_TOKEN", "TELEGRAM_BOT_TOKEN", "TELEGRAM_TOKEN", "API_TOKEN")
 

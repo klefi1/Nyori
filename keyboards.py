@@ -133,8 +133,9 @@ def group_panel_markup(chat_id, s):
     )
     kb.add(
         types.InlineKeyboardButton("📊 Статистика", callback_data=f"stats:{chat_id}"),
-        types.InlineKeyboardButton("« Назад", callback_data="back_main"),
+        types.InlineKeyboardButton("🗑 Убрать из списка", callback_data=f"forget:{chat_id}"),
     )
+    kb.add(types.InlineKeyboardButton("« Назад", callback_data="back_main"))
     return kb
 
 

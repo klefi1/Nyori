@@ -57,6 +57,8 @@ def _load():
         opts = ort.SessionOptions()
         opts.enable_cpu_mem_arena = False   # не раздуваем память под "про запас"
         opts.intra_op_num_threads = 1       # на слабом хостинге всё равно 0.25 vCPU
+        opts.inter_op_num_threads = 1
+        opts.enable_mem_pattern = False
         session = ort.InferenceSession(paths[0], sess_options=opts, providers=["CPUExecutionProvider"])
         _meta, _nsfw_idx, _session = meta, labels.index("NSFW"), session
         logger.info("ИИ-классификатор (Marqo): модель загружена (%s)", os.path.basename(paths[0]))

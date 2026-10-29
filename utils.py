@@ -41,6 +41,49 @@ def invalidate_admin_cache(chat_id=None, user_id=None):
             _ADMIN_CACHE.pop(key, None)
 
 
+# ===================== ЕСТЬ ЛИ БОТ В ЧАТЕ =====================
+# Панель показывала все группы, где бот когда-либо что-то видел, даже если его уже убрали или группу удалили.
+
+_BOT_IN_CHAT = {}   # chat_id -> (когда проверяли, есть ли бот)
+_BOT_IN_CHAT_TTL = 60
+_BOT_ID_CACHE = []
+# Признаки того, что бота в чате точно нет (а не просто сбой сети): ответы Telegram
+_GONE_MARKERS = ("chat not found", "bot was kicked", "bot is not a member", "not a member of the",
+                 "was deleted", "deactivated", "upgraded to a supergroup", "bot was blocked")
+
+
+def forget_bot_in_chat_cache(chat_id=None):
+    if chat_id is None:
+        _BOT_IN_CHAT.clear()
+    else:
+        _BOT_IN_CHAT.pop(chat_id, None)
+
+
+def bot_in_chat(bot, chat_id):
+    """
+    True, если бот всё ещё участник чата. При достоверном «нет» (кикнули, вышел, группа удалена/преобразована)
+    помечает группу неактивной — она пропадает из панели. Сбой сети или неизвестная ошибка НЕ считаются «нет»,
+    чтобы из-за временной проблемы не потерять чат из списка.
+    """
+    now = time.time()
+    cached = _BOT_IN_CHAT.get(chat_id)
+    if cached and now - cached[0] < _BOT_IN_CHAT_TTL:
+        return cached[1]
+    try:
+        if not _BOT_ID_CACHE:
+            _BOT_ID_CACHE.append(bot.get_me().id)
+        member = bot.get_chat_member(chat_id, _BOT_ID_CACHE[0])
+        present = member.status not in ("left", "kicked")
+    except Exception as e:
+        if not any(marker in str(e).lower() for marker in _GONE_MARKERS):
+            return True   # непонятная/сетевая ошибка — оставляем как есть, не кэшируем
+        present = False
+    _BOT_IN_CHAT[chat_id] = (now, present)
+    if not present:
+        db.set_group_active(chat_id, False)
+    return present
+
+
 # ===================== МЕТКИ ПОЛЬЗОВАТЕЛЕЙ =====================
 
 def cache_user(user):

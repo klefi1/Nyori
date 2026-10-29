@@ -17,6 +17,8 @@ def _can_manage(bot, chat_id, user_id):
 def _get_admin_groups(bot, user_id):
     result = []
     for chat_id in db.list_known_chat_ids():
+        if not utils.bot_in_chat(bot, chat_id):
+            continue   # бота там уже нет (убрали/группа удалена) — в списке не показываем
         if _can_manage(bot, chat_id, user_id):
             result.append((chat_id, db.get_group_title(chat_id)))
     return result
@@ -368,6 +370,18 @@ def register(bot):
                 db.update_settings(chat_id, antiflood_limit=int(lim), antiflood_window_sec=int(win))
                 render_group_panel(bot, uid, chat_id, call.message.message_id)
             bot.answer_callback_query(call.id)
+            return True
+
+        if data.startswith("forget:"):
+            chat_id = int(data.split(":")[1])
+            if _can_manage(bot, chat_id, uid):
+                # просто прячем из списка; настройки целы, и если бот снова что-то увидит в чате — группа вернётся
+                db.set_group_active(chat_id, False)
+                utils.forget_bot_in_chat_cache(chat_id)
+                bot.answer_callback_query(call.id, "Убрано из списка.")
+                render_main_panel(bot, uid, call.message.message_id)
+            else:
+                bot.answer_callback_query(call.id, "Нет доступа.")
             return True
 
         if data.startswith("stats:"):

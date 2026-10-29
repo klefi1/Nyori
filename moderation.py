@@ -200,6 +200,7 @@ def register(bot):
         parts = (message.text or "").split()
         if not parts:
             return None
+        db.ensure_group(message.chat.id, message.chat.title)   # админ пользуется ботом здесь — значит, группа должна быть в панели
         settings = db.get_settings(message.chat.id)
         if settings.get("delete_commands", True):
             utils.safe_delete(bot, message.chat.id, message.message_id)
